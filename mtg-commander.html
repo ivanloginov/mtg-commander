@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+  body{
+    font-size: 14px;
+    font-family: Arial;
+  }
+  table{
+    width: 100%;
+  }
+  td{
+    height: 150px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding: 10px;
+    vertical-align: top;
+  }
+  #td_manager{
+    width:200px;
+    text-align: center;
+  }
+  #preview{
+    height: 263px;
+    width: 200px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 3px;
+    margin-top: 5px;
+  }
+  #preview img{
+    height: 250px;
+  }
+  .card{
+    display:inline-block;
+    margin: 5px;
+  }
+  .card img{
+    height: 150px;
+  }
+  .overlay{
+    background-color: rgba(0,0,0,0.4);
+    position: absolute;
+    display: none;
+    margin-top: -179px;
+    width: 108px;
+    height: 150px;
+    text-align: center;
+    z-index: 0;
+  }
+  .button{
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid white;
+    width: 50px;
+    margin: auto;
+    margin-top: 30px;
+    color: white;
+    cursor: pointer;
+  }
+  .tapped{
+    opacity: 0.2;
+  }
+  .open_to_card{
+    background-color: rgba(33, 186, 69, 0.3);
+    border: 1px solid rgb(33, 186, 69);
+    border-radius: 3px;
+  }
+  #card_finder{
+    position: fixed;
+  }
+  textarea{
+    resize: none;
+    height: 18px;
+    font-family: Arial;
+    resize: none;
+    height: 18px;
+    font-family: Arial;
+    font-size: 18px;
+    width: 100px;
+    border: none;
+    border-bottom: 1px solid;
+  }
+  .untap{
+    color: black;
+    border: 1px solid rgba(0,0,0,0.5);
+    border-radius: 3px;
+    display: inline-block;
+    padding: 5px;
+    cursor: pointer;
+    margin-top: -4px;
+    position: absolute;
+    margin-left: 5px;
+}
+  }
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+
+  function create_table(){
+    var i=0;
+    var el = '<table>';
+    el += '<tr><td rowspan="6" id="td_manager">';
+    el += '<div id="card_finder">';
+    el += '<input type="text" id="fname">';
+    el += '<div id="preview"></div>';
+    el += '</div>';
+    el += '</td></tr>'
+    while (i<5){
+      el += '<tr><td id="td_'+i+'" class="player_zone"><textarea></textarea>';
+      el += '<div class="untap" ref="#td_'+i+'">Untap All</div><br/></td></tr>';
+      i++;
+    }
+    el += '</table>';
+    return el;
+  }
+
+  function draw_object(where, what){
+    $(where).html(what);
+  }
+
+  draw_object('body',create_table());
+
+  $('input').on('keypress', function(e){
+    if(e.which == 13) {
+      var card_info = $(this).val().split(":");
+      var number = "";
+      if (card_info.length>1){
+        number = "&number="+card_info[1];
+      }
+      draw_object('#preview', 'Looking for '+card_info);
+      $.ajax({
+        url: "https://api.magicthegathering.io/v1/cards?name="+card_info[0]+number,
+        success: function(data){
+          var jd = data;
+          var img = jd.cards[0].imageUrl;
+          var el = '<div class="card"><img src='+img+'><br/><textarea></textarea><div class="overlay">';
+          el += '<div class="button tap">Tap</div><div class="button remove">Remove</div>';
+          el += '</div></div>';
+          draw_object('#preview', el);
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#preview', function(e){
+    $('.player_zone').toggleClass('open_to_card').attr('open_to_card', 1);
+  });
+
+  $(document).on('click', '.player_zone', function(e){
+    if ($(this).attr('open_to_card')){
+      $(this).append($('#preview').html());
+      $('#preview').html('');
+      $('input').val('');
+      $(this).attr('open_to_card', 0);
+    }
+    $('.player_zone').removeClass('open_to_card');
+  });
+
+  $(document).on('click', '.player_zone > .card', function(e){
+    $(this).find('.overlay').toggle();
+  });
+
+  $(document).on('click', '.tap, .remove', function(e){
+    if ($(this).attr('class').indexOf('tap')>-1){
+      $(this).parents('.card').find('img').toggleClass('tapped');
+    } else if ($(this).attr('class').indexOf('remove')>-1){
+      $(this).parents('.card').remove();
+    }
+  });
+
+  $(document).on('click', '.untap', function(e){
+    var td_id = $(this).attr('ref');
+    var els = $(td_id).find('.card');
+    var i=0;
+    while (i<els.length){
+      $(els[i]).find('img').removeClass('tapped');
+      i++;
+    }
+  });
+
+});
+</script>
+</head>
+<body>
+</body>
+</html>
