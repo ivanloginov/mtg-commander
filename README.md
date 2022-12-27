@@ -1,13 +1,13 @@
-# Simple web-page to play EDH with screen sharing
+## Simple web-page to play EDH with screen sharing
 
-Online action tracking of every turn.
+Online track of every turn.
 
-### Setup:
-1. Open .html file
+#### Setup:
+1. Open mtg_commander.html
 2. Share your screen
 3. Add players
 
-### Tracking:
+#### Tracking:
 1. Select player
 2. Type card name
 3. Add card to player's area
