@@ -1,4 +1,4 @@
-## Simple web-page to play EDH with screen sharing
+## Simple web-page to play Commander with screen sharing
 
 Online track of every turn.
 
