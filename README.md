@@ -1,13 +1,13 @@
-### Simple web-page to play Commander with screen sharing
+# Simple web-page to play Commander with screen sharing
 
-Online track of every turn.
+Online track of actions on every turn.
 
-#### Setup:
+## Setup:
 1. Open mtg_commander.html
 2. Share your screen
 3. Add players
 
-#### Tracking:
+## Tracking:
 1. Select player
 2. Type card name
 3. Add card to player's area
