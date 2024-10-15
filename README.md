@@ -12,3 +12,6 @@ Online track of actions on every turn.
 2. Type card name
 3. Add card to player's area
 4. Edit card specs
+
+## License
+This project is licensed under the MIT License.
